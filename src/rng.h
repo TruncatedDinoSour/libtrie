@@ -13,7 +13,7 @@ typedef struct TrieRNG {
 #endif                                  /* ITER_MAGIC */
 
 #define rng_iter(state, count, idx) \
-    (state) ^= ((count) - (idx) + ITER_MAGIC + ((idx) % 2 == 0))
+    (state) ^= (uint32_t)((count) - (idx) + ITER_MAGIC + ((idx) % 2 == 0))
 
 void rng_seed(TrieRNG *rng, const uint8_t *seed, const uint64_t seed_size);
 uint32_t rng_next(TrieRNG *rng);
