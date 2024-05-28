@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include <stdint.h>
 
+extern const uint16_t trie_version;
+
 typedef struct Trie {
     uint8_t c;
     uint8_t n;

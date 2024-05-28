@@ -7,7 +7,7 @@
 #include <stdint.h>
 
 uint8_t *gen_trie_random(const Trie *node,
-                         RNGState *rng,
+                         TrieRNG *rng,
                          uint64_t min_length,
                          uint64_t *size) {
     static uint8_t *buffer      = NULL;

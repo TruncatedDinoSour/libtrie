@@ -19,7 +19,7 @@ int main(const int argc, const char *const argv[]) {
     uint64_t idx;
     uint8_t buf[16384] = {0};
 
-    RNGState rng;
+    TrieRNG rng;
     uint8_t *sentence;
     uint64_t sentence_sz;
 

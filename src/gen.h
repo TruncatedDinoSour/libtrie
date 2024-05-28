@@ -6,5 +6,5 @@
 
 #include <stdint.h>
 
-uint8_t *gen_trie_random(const Trie *node, RNGState *rng, uint64_t min_length, uint64_t *size);
+uint8_t *gen_trie_random(const Trie *node, TrieRNG *rng, uint64_t min_length, uint64_t *size);
 #endif /* _TRIE_GEN_H */
