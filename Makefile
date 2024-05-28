@@ -15,7 +15,9 @@ MAIN_OBJ := $(OBJ_DIR)/main.o
 PREFIX ?= /usr
 BINDIR := $(PREFIX)/bin
 LIBDIR := $(PREFIX)/lib64
-INCLUDEDIR := $(PREFIX)/include
+INCLUDEDIR := $(PREFIX)/include/libtrie
+
+HEADER_FILES := $(wildcard $(SRC_DIR)/*.h)
 
 $(BIN): $(MAIN_OBJ) libtrie
 	$(CC) -o $@ $(MAIN_OBJ) -L. -ltrie $(LIBS) $(LDFLAGS)
@@ -43,17 +45,20 @@ clean:
 	rm -rf $(BIN) libtrie.so $(OBJ_DIR)
 
 install: $(BIN) libtrie
-	@echo "Installing binary and library..."
+	@echo "Installing binary, library, and headers..."
 	mkdir -p $(BINDIR)
 	mkdir -p $(LIBDIR)
+	mkdir -p $(INCLUDEDIR)
 	cp $(BIN) $(BINDIR)
 	cp libtrie.so $(LIBDIR)
+	cp $(HEADER_FILES) $(INCLUDEDIR)
 	@echo "Installation complete."
 
 uninstall:
-	@echo "Removing binary and library..."
+	@echo "Removing binary, library, and headers..."
 	rm -f $(BINDIR)/$(BIN)
 	rm -f $(LIBDIR)/libtrie.so
+	rm -rf $(INCLUDEDIR)
 	@echo "Uninstallation complete."
 
 .PHONY: install uninstall
