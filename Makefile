@@ -13,9 +13,9 @@ LIB_OBJ_FILES := $(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(LIB_SRC_FILES))
 MAIN_OBJ := $(OBJ_DIR)/main.o
 
 PREFIX ?= /usr
-BINDIR := $(PREFIX)/bin
-LIBDIR := $(PREFIX)/lib64
-INCLUDEDIR := $(PREFIX)/include/libtrie
+BINDIR ?= $(PREFIX)/bin
+LIBDIR ?= $(PREFIX)/lib64
+INCLUDEDIR ?= $(PREFIX)/include/libtrie
 
 HEADER_FILES := $(wildcard $(SRC_DIR)/*.h)
 
