@@ -66,8 +66,9 @@ uint8_t *gen_trie_random(const Trie *node,
         return gen_trie_random(node, rng, min_length, size);
     } else {
         buffer[length] = '\0';
-        *size          = length;
-        final_buffer   = buffer;
+        if (size)
+            *size = length;
+        final_buffer = buffer;
 
         buffer      = NULL;
         buffer_size = 0;
