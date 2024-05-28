@@ -76,10 +76,7 @@ int main(const int argc, const char *const argv[]) {
         }
 
         while ((c = fgetc(fp)) != EOF) {
-            if (c == '\n')
-                continue;
-
-            buf[idx++] = (uint8_t)c;
+            buf[idx++] = c == '\n' ? ' ' : (uint8_t)c;
 
             if (idx >= 16382 || c == '.' || c == '?' || c == '!') {
                 buf[idx] = '\0';
