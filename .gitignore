@@ -1,0 +1,7 @@
+*.o
+.ccls-cache/
+*.elf
+obj/
+/libtrie
+*.bin
+/trie
