@@ -1,7 +1,6 @@
 #include "trie.h"
 #include "null.h"
 
-#include <ctype.h>
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
@@ -33,11 +32,11 @@ Trie *trie_find_child(const Trie *node, const uint8_t c) {
     return NULL;
 }
 
-void trie_insert_character(Trie *node, const uint8_t c) {
+Trie *trie_insert_character(Trie *node, const uint8_t c) {
     Trie *child;
 
     if (!node)
-        return;
+        return NULL;
 
     child = trie_find_child(node, c);
 
@@ -49,46 +48,26 @@ void trie_insert_character(Trie *node, const uint8_t c) {
 
         node->children[node->n++] = child;
     }
+
+    return child;
 }
 
-void trie_insert_sentence(Trie *root, const uint8_t *sentence) {
+Trie *trie_insert_sentence(Trie *root, const uint8_t *sentence) {
+    uint8_t c;
     Trie *current;
 
-    uint8_t c;
-    uint8_t first_char;
-
     if (!sentence)
-        return;
+        return NULL;
 
-    /* Skip whitespace and punctuation at the start */
-    while (!*sentence || ispunct(*sentence) || isspace(*sentence))
-        ++sentence;
-
-    current    = root;
-    first_char = 1;
+    current = root;
 
     while (*sentence) {
-        if (isalpha(*sentence)) {
-            if (first_char) {
-                c          = (uint8_t)toupper(*sentence);
-                first_char = 0;
-            } else
-                c = *sentence;
-        } else
-            c = *sentence;
-
-        trie_insert_character(current, c);
-        current = trie_find_child(current, c);
+        c       = *sentence;
+        current = trie_insert_character(current, c);
         ++sentence;
     }
 
-    /* Ensure punctuation at the end */
-    if (!ispunct(current->c)) {
-        trie_insert_character(current, '.');
-        current = trie_find_child(current, '.');
-    }
-
-    trie_insert_character(current, '\0');
+    return trie_insert_character(current, '\0');
 }
 
 void trie_save_file(FILE *file, const Trie *node) {

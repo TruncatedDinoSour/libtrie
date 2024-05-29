@@ -15,8 +15,8 @@ typedef struct Trie {
 
 Trie *trie_create_node(const uint8_t c);
 Trie *trie_find_child(const Trie *node, const uint8_t c);
-void trie_insert_character(Trie *node, const uint8_t c);
-void trie_insert_sentence(Trie *root, const uint8_t *sentence);
+Trie *trie_insert_character(Trie *node, const uint8_t c);
+Trie *trie_insert_sentence(Trie *root, const uint8_t *sentence);
 
 /* FS operations */
 

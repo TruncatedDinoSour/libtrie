@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
+#include <ctype.h>
 
 #include "main.h"
 
@@ -9,30 +10,33 @@
 #include "rng.h"
 #include "trie.h"
 
+#define BUF_SIZE 16384
+
 int main(const int argc, const char *const argv[]) {
     Trie *t;
     FILE *fp;
-    int c;
+    int c, p;
 
-    long min_size;
+    long min_size, count;
 
     uint64_t idx;
-    uint8_t buf[16384] = {0};
+    uint8_t buf[BUF_SIZE] = {0};
 
     TrieRNG rng;
     uint8_t *sentence;
     uint64_t sentence_sz;
 
-    if (argc < 5) {
-        fprintf(
-            stderr,
-            "Usage: %s <model.bin> <dataset.txt> <seed> <min sentence size>\n",
-            argv[0]);
+    if (argc < 6) {
+        fprintf(stderr,
+                "Usage: %s <model.bin> <dataset.txt> <seed> <min sentence "
+                "size> <count>\n",
+                argv[0]);
         fputs("- `model.bin` is a valid Libtrie model.\n"
               "- `dataset.txt` is your text with punctuation and whatnot. "
               "Newlines are ignored.\n"
               "- `seed` is any data, even text, the RNG will be seeded with.\n"
-              "- `min sentence size` is the minimum generated sentence size.\n",
+              "- `min sentence size` is the minimum generated sentence size.\n"
+              "- `count` is the sentence count.\n",
               stderr);
         return 1;
     }
@@ -41,6 +45,13 @@ int main(const int argc, const char *const argv[]) {
 
     if (min_size < 1) {
         fprintf(stderr, "Invalid `min size`: %ld\n", min_size);
+        return 1;
+    }
+
+    count = atol(argv[5]);
+
+    if (count < 1) {
+        fprintf(stderr, "Invalid `count`: %ld\n", count);
         return 1;
     }
 
@@ -66,8 +77,7 @@ int main(const int argc, const char *const argv[]) {
             return 1;
         }
 
-        t   = trie_create_node('\0');
-        idx = 0;
+        t = trie_create_node('\0');
 
         if (!t) {
             fclose(fp);
@@ -75,14 +85,20 @@ int main(const int argc, const char *const argv[]) {
             return 1;
         }
 
-        while ((c = fgetc(fp)) != EOF) {
-            buf[idx++] = c == '\n' || c == '\r' ? ' ' : (uint8_t)c;
+        idx = 0;
+        p   = 0;
 
-            if (idx >= 16382 || c == '.' || c == '?' || c == '!') {
+        while ((c = fgetc(fp)) != EOF) {
+            buf[idx++] =
+                (c == '\n' || c == '\r') && p != '\n' ? ' ' : (uint8_t)c;
+
+            if (idx >= BUF_SIZE - 2 || c == '.' || c == '?' || c == '!') {
                 buf[idx] = '\0';
                 trie_insert_sentence(t, buf);
                 idx = 0;
             }
+
+            p = c;
         }
     }
 
@@ -92,11 +108,22 @@ int main(const int argc, const char *const argv[]) {
 
     rng_seed(&rng, (const uint8_t *)argv[3], strlen(argv[3]));
 
-    puts("Generating a random sentence...");
+    printf("Generating %ld random sentences...\n", count);
 
-    sentence = gen_trie_random(t, &rng, (uint64_t)min_size, &sentence_sz);
+    for (idx = 0; idx < (uint64_t)count; ++idx) {
+        rng_iter(rng.state, (uint64_t)count,
+                 idx); /* Ensure randomness of different counts. */
 
-    printf("Sentence of %lu characters: %s\n", sentence_sz, sentence);
+        sentence = gen_trie_random(t, &rng, (uint64_t)min_size, &sentence_sz);
+
+        if (!sentence)
+            return 1;
+
+        printf("[%lu,%lu] %s%s", idx, sentence_sz, sentence,
+               ispunct(sentence[sentence_sz - 1]) ? " " : ". ");
+    }
+
+    putchar('\n');
 
     puts("Saving the tree...");
 

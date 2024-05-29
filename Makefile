@@ -34,7 +34,7 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c $(SRC_DIR)/%.h | $(OBJ_DIR)
 .PHONY: clean test
 
 test: libtrie $(BIN)
-	if [ $$(LD_LIBRARY_PATH="$(PWD)" ./trie model.bin tests/blog.ari.lt.txt seed 100 | sha256sum | awk '{print $$1}') = 'dc34e24d96514924141f329a06033ed6df342c9efbd17efd2bc0da076c2c86c0' ]; then \
+	if [ $$(LD_LIBRARY_PATH="$(PWD)" ./trie model.bin tests/blog.ari.lt.txt seed 10 10 | sha256sum | awk '{print $$1}') = '3a3040ca2c903d0c54fcc4c84dc807048f962cfc889a4e46d4c7586af8248cfa' ]; then \
 		echo 'Test passed.'; \
 	else \
 		echo 'Test failed' >&2; \
