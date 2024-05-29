@@ -10,7 +10,7 @@
 #include "rng.h"
 #include "trie.h"
 
-#define BUF_SIZE 16384
+#define BUF_SIZE 1024
 
 int main(const int argc, const char *const argv[]) {
     Trie *t;
@@ -92,7 +92,7 @@ int main(const int argc, const char *const argv[]) {
             buf[idx++] =
                 (c == '\n' || c == '\r') && p != '\n' ? ' ' : (uint8_t)c;
 
-            if (idx >= BUF_SIZE - 2 || c == '.' || c == '?' || c == '!') {
+            if (idx >= BUF_SIZE - 1 || c == '.' || c == '?' || c == '!') {
                 buf[idx] = '\0';
                 trie_insert_sentence(t, buf);
                 idx = 0;

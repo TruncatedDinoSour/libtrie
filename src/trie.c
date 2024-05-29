@@ -53,7 +53,6 @@ Trie *trie_insert_character(Trie *node, const uint8_t c) {
 }
 
 Trie *trie_insert_sentence(Trie *root, const uint8_t *sentence) {
-    uint8_t c;
     Trie *current;
 
     if (!sentence)
@@ -61,11 +60,8 @@ Trie *trie_insert_sentence(Trie *root, const uint8_t *sentence) {
 
     current = root;
 
-    while (*sentence) {
-        c       = *sentence;
-        current = trie_insert_character(current, c);
-        ++sentence;
-    }
+    while (*sentence)
+        current = trie_insert_character(current, *(sentence++));
 
     return trie_insert_character(current, '\0');
 }
