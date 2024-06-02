@@ -5,7 +5,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-const uint16_t trie_version = 1;
+const uint16_t trie_version = 2;
 
 Trie *trie_create_node(const uint8_t c) {
     Trie *node;

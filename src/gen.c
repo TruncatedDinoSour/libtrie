@@ -35,6 +35,9 @@ uint8_t *gen_trie_random(const Trie *node,
         idx     = (uint8_t)rng_next(rng) % current->n;
         current = current->children[idx];
 
+        if (!current)
+            continue;
+
         if (current->c == '\0')
             break;
 
