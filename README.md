@@ -1,3 +1,4 @@
+# This repository has been migrated to the self-hosted ari-web Forgejo instance: <https://git.ari.lt/ari/libtrie>
 # Libtrie
 
 > Trie implementation in C89 for generating text.
